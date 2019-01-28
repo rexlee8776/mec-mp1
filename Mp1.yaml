@@ -1,16 +1,16 @@
 swagger: '2.0'
 info:
   title: Mp1 API
-  version: 1.1.1
+  version: 2.0.5
   description: The ETSI MEC ISG MEC011 Application Enablement API described using OpenAPI
   license:
     name: ETSI Forge copyright notice
     url: 'https://forge.etsi.org/etsi-forge-copyright-notice.txt'
 externalDocs:
-  description: 'ETSI GS MEC011 Application Enablement API, V1.1.1'
-  url: 'http://www.etsi.org/deliver/etsi_gs/MEC/001_099/011/01.01.01_60/gs_mec011v010101p.pdf'
+  description: 'ETSI GS MEC011 Application Enablement API, V2.0.5'
+  url: 'https://docbox.etsi.org/ISG/MEC/70-Draft/0011v211Plat.App.Enabl/MEC-0011v211Plat.App.Enablv205.zip'
 host: '127.0.0.1:8081'
-basePath: /exampleAPI/mp1/v1/
+basePath: '/mp1/v1/'
 schemes:
   - http
   - https
@@ -21,42 +21,57 @@ produces:
 parameters:
   Body.AppTerminationNotificationSubscription:
     name: AppTerminationNotificationSubscription
-    description: Entity body in the request contains a subscription to the mobile edge application termination notifications that is to be created.
+    description: Entity body in the request contains a subscription to the MEC application termination notifications that is to be created.
     in: body
     required: true
     schema:
-      $ref: '#/definitions/AppTerminationNotificationSubscription'
+      type: object
+      properties:
+        AppTerminationNotificationSubscription:
+          $ref: '#/definitions/AppTerminationNotificationSubscription'
   Body.DnsRule:
     name: DnsRule
     description: The updated state is included in the entity body of the request.
     in: body
     required: true
     schema:
-      $ref: '#/definitions/DnsRule'
+      type: object
+      properties:
+        DnsRule:
+          $ref: '#/definitions/DnsRule'
   Body.SerAvailabilityNotificationSubscription:
     name: SerAvailabilityNotificationSubscription
-    description: Entity body in the request contains a subscription to the mobile edge service availability notifications that is to be created.
+    description: Entity body in the request contains a subscription to the MEC service availability notifications that is to be created.
     in: body
     required: true
     schema:
-      $ref: '#/definitions/SerAvailabilityNotificationSubscription'
+      type: object
+      properties:
+        SerAvailabilityNotificationSubscription:
+          $ref: '#/definitions/SerAvailabilityNotificationSubscription'
   Body.ServiceInfo:
     name: ServiceInfo
     description: New ServiceInfo with updated "state" is included as entity body of the request
     in: body
     required: true
     schema:
-      $ref: '#/definitions/ServiceInfo'
+      type: object
+      properties:
+        ServiceInfo:
+          $ref: '#/definitions/ServiceInfo'
   Body.TrafficRule:
     name: TrafficRule
     description: One or more updated attributes that are allowed to be changed
     in: body
     required: true
     schema:
-      $ref: '#/definitions/TrafficRule'
+      type: object
+      properties:
+        TrafficRule:
+          $ref: '#/definitions/TrafficRule'
   Path.AppInstanceId:
     name: appInstanceId
-    description: Represents a mobile edge application instance. Note that the appInstanceId is allocated by the mobile edge platform manager.
+    description: Represents a MEC application instance. Note that the appInstanceId is allocated by the MEC platform manager.
     in: path
     required: true
     type: string
@@ -70,21 +85,23 @@ parameters:
     format: uri
   Path.SubscriptionId:
     name: subscriptionId
-    description: Represents a subscription to the notifications from the mobile edge platform.
+    description: Represents a subscription to the notifications from the MEC platform.
     in: path
     required: true
     type: string
     format: uri
   Path.SubscriptionType:
     name: subscriptionType
-    description: Represents a subscription type to the notifications from the mobile edge platform.
+    description: Represents a subscription type to the notifications from the MEC platform.
     in: path
     required: true
     type: string
-    format: uri
+    enum:
+      - SerAvailabilityNotificationSubscription
+      - AppTerminationNotificationSubscription
   Path.ServiceId:
     name: serviceId
-    description: Represents a mobile edge service instance.
+    description: Represents a MEC service instance.
     in: path
     required: true
     type: string
@@ -98,13 +115,13 @@ parameters:
     format: uri
   Query.Ser_category_id:
     name: ser_category_id
-    description: A mobile edge application instance may use ser_category_id as an input parameter to query the availability of a list of mobile edge service instances in a serCategory. Either "ser_instance_id" or "ser_name" or "ser_category_id" or none of them shall be present.
+    description: A MEC application instance may use ser_category_id as an input parameter to query the availability of a list of MEC service instances in a serCategory. Either "ser_instance_id" or "ser_name" or "ser_category_id" or none of them shall be present.
     in: query
     required: false
     type: string
   Query.Ser_instance_id:
     name: ser_instance_id
-    description: A mobile edge application instance may use multiple ser_instance_ids as an input parameter to query the availability of a list of mobile edge service instances. Either "ser_instance_id" or "ser_name" or "ser_category_id" or none of them shall be present.
+    description: A MEC application instance may use multiple ser_instance_ids as an input parameter to query the availability of a list of MEC service instances. Either "ser_instance_id" or "ser_name" or "ser_category_id" or none of them shall be present.
     in: query
     required: false
     type: array
@@ -112,18 +129,36 @@ parameters:
       type: string
   Query.Ser_name:
     name: ser_name
-    description: A mobile edge application instance may use multiple ser_names as an input parameter to query the availability of a list of mobile edge service instances. Either "ser_instance_id" or "ser_name" or "ser_category_id" or none of them shall be present.
+    description: A MEC application instance may use multiple ser_names as an input parameter to query the availability of a list of MEC service instances. Either "ser_instance_id" or "ser_name" or "ser_category_id" or none of them shall be present.
     in: query
     required: false
     type: array
     items:
       type: string
+  Query.Locality_types:
+    name: locality_types
+    in: query
+    description: A MEC application instance may use scope_of_locality as an input parameter to query the availability of a list of MEC service instances with a certain scope of locality
+    required: false
+    type: string
+  Query.Is_local:
+    name: is_local
+    in: query
+    description: Indicate whether the service is located in the same locality (as defined by scopeOfLocality) as the consuming MEC application
+    required: false
+    type: boolean
+  Query.Consumed_LocalOnly:
+    name: consumed_localonly
+    in: query
+    description: Indicate whether the service can only be consumed by the MEC applications located in the same locality (as defined by scopeOfLocality) as this service instance
+    required: false
+    type: boolean
 paths:
   '/applications/{appInstanceId}/dns_rules':
     parameters:
       - $ref: '#/parameters/Path.AppInstanceId'
     get:
-      description: This method retrieves information about all the DNS rules associated with a mobile edge application instance.
+      description: This method retrieves information about all the DNS rules associated with a MEC application instance.
       operationId: ApplicationsDnsRules.GET
       produces:
         - application/json
@@ -139,13 +174,13 @@ paths:
                   $ref: '#/definitions/DnsRule'
           examples:
             application/json:
-              - DnsRule:
-                  dnsRuleId: DnsRule1
-                  domainName: www.example.com
-                  ipAddressType: IP_V4
-                  ipAddress: 146.241.7.3
+              -  DnsRule:
+                  dnsRuleId: 'DnsRule1'
+                  domainName: 'www.example.com'
+                  ipAddressType: 'IP_V4'
+                  ipAddress: '146.241.7.3'
                   ttl: 300
-                  state: ACTIVE
+                  state: 'ACTIVE'
         '400':
           description: Bad Request
           schema:
@@ -174,7 +209,7 @@ paths:
       - $ref: '#/parameters/Path.AppInstanceId'
       - $ref: '#/parameters/Path.DnsRuleId'
     get:
-      description: This method retrieves information about a DNS rule associated with a mobile edge application instance.
+      description: This method retrieves information about a DNS rule associated with a MEC application instance.
       operationId: ApplicationsDnsRule.GET
       produces:
         - application/json
@@ -189,12 +224,12 @@ paths:
           examples:
             application/json:
               DnsRule:
-                dnsRuleId: DnsRule1
-                domainName: www.example.com
-                ipAddressType: IP_V4
-                ipAddress: 146.241.7.3
+                dnsRuleId: 'DnsRule1'
+                domainName: 'www.example.com'
+                ipAddressType: 'IP_V4'
+                ipAddress: '146.241.7.3'
                 ttl: 300
-                state: ACTIVE
+                state: 'ACTIVE'
         '400':
           description: Bad Request
           schema:
@@ -236,12 +271,12 @@ paths:
           examples:
             application/json:
               DnsRule:
-                dnsRuleId: DnsRule1
-                domainName: www.example.com
-                ipAddressType: IP_V4
-                ipAddress: 146.241.7.3
+                dnsRuleId: 'DnsRule1'
+                domainName: 'www.example.com'
+                ipAddressType: 'IP_V4'
+                ipAddress: '146.241.7.3'
                 ttl: 300
-                state: ACTIVE
+                state: 'ACTIVE'
         '400':
           description: Bad Request
           schema:
@@ -312,15 +347,15 @@ paths:
               ProblemDetails:
                 $ref: '#/definitions/ProblemDetails'
     post:
-      description: 'The POST method may be used to create a new subscription. One example use case is to create a new subscription to the mobile edge service availability notifications. Upon success, the response contains entity body describing the created subscription.'
+      description: 'The POST method may be used to create a new subscription. One example use case is to create a new subscription to the MEC service availability notifications. Upon success, the response contains entity body describing the created subscription.'
       operationId: ApplicationsSubscriptions.POST
       produces:
         - application/json
       parameters:
-        - $ref: '#/parameters/Body.AppTerminationNotificationSubscription'
+        - $ref: '#/parameters/Body.SerAvailabilityNotificationSubscription'
       responses:
         '201':
-          description: Entity body in the request contains a subscription to the mobile edge service availability notifications that is to be created.
+          description: Entity body in the request contains a subscription to the MEC service availability notifications that is to be created.
           headers:
             location: 
               description: The resource URI of the created resource
@@ -329,8 +364,8 @@ paths:
           schema:
             type: object
             properties:
-              AppTerminationNotificationSubscription:
-                $ref: '#/definitions/AppTerminationNotificationSubscription'
+              SerAvailabilityNotificationSubscription:
+                $ref: '#/definitions/SerAvailabilityNotificationSubscription'
         '400':
           description: Bad Request
           schema:
@@ -370,8 +405,8 @@ paths:
           schema:
             type: object
             properties:
-              SerAvailabilityNotificationSubscription:
-                $ref: '#/definitions/SerAvailabilityNotificationSubscription'
+              AppTerminationNotificationSubscription:
+                $ref: '#/definitions/AppTerminationNotificationSubscription'
         '400':
           description: Bad Request
           schema:
@@ -423,7 +458,7 @@ paths:
     parameters:
       - $ref: '#/parameters/Path.AppInstanceId'
     get:
-      description: This method retrieves information about all the traffic rules associated with a mobile edge application instance.
+      description: This method retrieves information about all the traffic rules associated with a MEC application instance.
       operationId: ApplicationsTrafficRules.GET
       produces:
         - application/json
@@ -437,26 +472,6 @@ paths:
               properties:
                 TrafficRule:
                   $ref: '#/definitions/TrafficRule'
-          examples:
-            application/json:
-              - TrafficRule:
-                  trafficRuleId: TrafficRule123
-                  serName: ExampleService
-                  filterType: FLOW
-                  priority: 1
-                  trafficFilter:
-                    srcAddress:
-                      - 192.168.2.0/24
-                      - 192.168.3.0/24
-                    dstAddress:
-                      - 192.127.4.100/32
-                    dstPort:
-                      - 80
-                  action: FORWARD_DECAPSULATED
-                  dstInterface:
-                    interfaceType: IP
-                    dstIpAddress: 20.1.1.1
-                  state: ACTIVE
         '400':
           description: Bad Request
           schema:
@@ -485,7 +500,7 @@ paths:
       - $ref: '#/parameters/Path.AppInstanceId'
       - $ref: '#/parameters/Path.TrafficRuleId'
     get:
-      description: This method retrieves information about all the traffic rules associated with a mobile edge application instance.
+      description: This method retrieves information about all the traffic rules associated with a MEC application instance.
       operationId: ApplicationsTrafficRule.GET
       produces:
         - application/json
@@ -500,23 +515,22 @@ paths:
           examples:
             application/json:
               TrafficRule:
-                trafficRuleId: TrafficRule123
-                serName: ExampleService
-                filterType: FLOW
+                trafficRuleId: 'TrafficRule123'
+                filterType: 'FLOW'
                 priority: 1
                 trafficFilter:
-                  srcAddress:
-                    - 192.168.2.0/24
-                    - 192.168.3.0/24
+                - srcAddress:
+                    - '192.168.2.0/24'
+                    - '192.168.3.0/24'
                   dstAddress:
-                    - 192.127.4.100/32
+                    - '192.127.4.100/32'
                   dstPort:
-                    - 80
-                action: FORWARD_DECAPSULATED
+                    - '80'
+                action: 'FORWARD_DECAPSULATED'
                 dstInterface:
-                  interfaceType: IP
-                  dstIpAddress: 20.1.1.1
-                state: ACTIVE
+                  interfaceType: 'IP'
+                  dstIpAddress: '20.1.1.1'
+                state: 'ACTIVE'
         '400':
           description: Bad Request
           schema:
@@ -541,7 +555,7 @@ paths:
               ProblemDetails:
                 $ref: '#/definitions/ProblemDetails'
     put:
-      description: This method retrieves information about all the traffic rules associated with a mobile edge application instance.
+      description: This method retrieves information about all the traffic rules associated with a MEC application instance.
       operationId: ApplicationsTrafficRules.PUT
       produces:
         - application/json
@@ -558,23 +572,325 @@ paths:
           examples:
             application/json:
               TrafficRule:
-                trafficRuleId: TrafficRule123
-                serName: ExampleService
-                filterType: FLOW
+                trafficRuleId: 'TrafficRule123'
+                filterType: 'FLOW'
                 priority: 1
                 trafficFilter:
-                  srcAddress:
-                    - 192.168.2.0/24
-                    - 192.168.3.0/24
+                - srcAddress:
+                    - '192.168.2.0/24'
+                    - '192.168.3.0/24'
                   dstAddress:
-                    - 192.127.4.100/32
+                    - '192.127.4.100/32'
                   dstPort:
-                    - 80
-                action: FORWARD_DECAPSULATED
+                    - '80'
+                action: 'FORWARD_DECAPSULATED'
                 dstInterface:
-                  interfaceType: IP
-                  dstIpAddress: 20.1.1.1
-                state: ACTIVE
+                  interfaceType: 'IP'
+                  dstIpAddress: '20.1.1.1'
+                state: 'ACTIVE'
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+        '403':
+          description: Forbidden
+          schema:
+            type: object
+            required:
+              - ProblemDetails
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+        '404':
+          description: Not Found
+          schema:
+            type: object
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+        '412':
+          description: Precondition Failed
+          schema:
+            type: object
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+  '/applications/{appInstanceId}/services':
+    parameters:
+      - $ref: '#/parameters/Path.AppInstanceId'
+    get:
+      description: This method retrieves information about a list of meService resources for a particular application. This method is typically used in "service availability query" procedure
+      operationId: AppServices.GET
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/Query.Ser_instance_id'
+        - $ref: '#/parameters/Query.Ser_name'
+        - $ref: '#/parameters/Query.Ser_category_id'
+        - $ref: '#/parameters/Query.Consumed_LocalOnly'
+        - $ref: '#/parameters/Query.Is_local'
+        - $ref: '#/parameters/Query.Locality_types'
+      responses:
+        '200':
+          description: It is used to indicate nonspecific success. The response body contains a representation of the resource.
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                ServiceInfo:
+                  $ref: '#/definitions/ServiceInfo'
+          examples:
+            application/json:
+              - ServiceInfo:
+                  serInstanceId: 'ServiceInstance123'
+                  serName: 'ExampleService'
+                  serCategory:
+                    href: 'catItem1'
+                    id: 'id12345'
+                    name: 'RNI'
+                    version: 'version1'
+                  version: 'ServiceVersion1'
+                  state: 'ACTIVE'
+                  transportId: 'Rest1'
+                  transportInfo:
+                    id: 'TransId12345'
+                    name: 'REST'
+                    description: 'REST API'
+                    type: 'REST_HTTP'
+                    protocol: 'HTTP'
+                    version: '2.0'
+                    endpoint:
+                      uris:
+                        - '/meMp1/service/EntryPoint'
+                      addresses:
+                        - host: '192.0.2.0'
+                          port: 8080
+                    security:
+                      oAuth2Info:
+                        grantTypes: 'OAUTH2_CLIENT_CREDENTIALS'
+                        tokenEndpoint: '/meMp1/security/TokenEndPoint'
+                  serializer: 'JSON'
+                  scopeOfLocality: 'MEC_HOST'
+                  consumedLocalOnly: true
+                  isLocal: false
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+        '403':
+          description: Forbidden
+          schema:
+            type: object
+            required:
+              - ProblemDetails
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+        '404':
+          description: Not Found
+          schema:
+            type: object
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+    post:
+      description: This method is used to create a meService resource. This method is typically used in "service availability update and new service registration" procedure
+      operationId: AppServices.POST
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/Body.ServiceInfo'
+      responses:
+        '201':
+          description: 'Upon success, the HTTP response shall include a Location HTTP header that contains the resource URI of the created resource.'
+          headers:
+            location: 
+              description: The resource URI of the created resource
+              type: string
+              format: uri
+          schema:
+            type: object
+            properties:
+              ServiceInfo:
+                $ref: '#/definitions/ServiceInfo'
+          examples:
+            application/json:
+              ServiceInfo:
+                serInstanceId: 'ServiceInstance123'
+                serName: 'ExampleService'
+                serCategory:
+                  href: 'catItem1'
+                  id: 'id12345'
+                  name: 'RNI'
+                  version: 'version1'
+                version: 'ServiceVersion1'
+                state: 'ACTIVE'
+                transportId: 'Rest1'
+                transportInfo:
+                  id: 'TransId12345'
+                  name: 'REST'
+                  description: 'REST API'
+                  type: 'REST_HTTP'
+                  protocol: 'HTTP'
+                  version: '2.0'
+                  endpoint:
+                    uris:
+                      - '/meMp1/service/EntryPoint'
+                    addresses:
+                      - host: '192.0.2.0'
+                        port: 8080
+                  security:
+                    oAuth2Info:
+                      grantTypes: 'OAUTH2_CLIENT_CREDENTIALS'
+                      tokenEndpoint: '/meMp1/security/TokenEndPoint'
+                serializer: 'JSON'
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+        '403':
+          description: Forbidden
+          schema:
+            type: object
+            required:
+              - ProblemDetails
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+        '404':
+          description: Not Found
+          schema:
+            type: object
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+  '/applications/{appInstanceId}/services/{serviceId}':
+    parameters:
+      - $ref: '#/parameters/Path.ServiceId'
+      - $ref: '#/parameters/Path.AppInstanceId'
+    get:
+      description: This method retrieves information about a meService resource. This method is typically used in "service availability query" procedure
+      operationId: AppServicesServiceId.GET
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: It is used to indicate nonspecific success. The response body contains a representation of the resource.
+          schema:
+            type: object
+            properties:
+              ServiceInfo:
+                $ref: '#/definitions/ServiceInfo'
+          examples:
+            application/json:
+              ServiceInfo:
+                serInstanceId: 'ServiceInstance123'
+                serName: 'ExampleService'
+                serCategory:
+                  href: 'catItem1'
+                  id: 'id12345'
+                  name: 'RNI'
+                  version: 'version1'
+                version: 'ServiceVersion1'
+                state: 'ACTIVE'
+                transportId: 'Rest1'
+                transportInfo:
+                  id: 'TransId12345'
+                  name: 'REST'
+                  description: 'REST API'
+                  type: 'REST_HTTP'
+                  protocol: 'HTTP'
+                  version: '2.0'
+                  endpoint:
+                    uris:
+                      - '/meMp1/service/EntryPoint'
+                    addresses:
+                      - host: '192.0.2.0'
+                        port: 8080
+                  security:
+                    oAuth2Info:
+                      grantTypes: 'OAUTH2_CLIENT_CREDENTIALS'
+                      tokenEndpoint: '/meMp1/security/TokenEndPoint'
+                serializer: 'JSON'
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+        '403':
+          description: Forbidden
+          schema:
+            type: object
+            required:
+              - ProblemDetails
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+        '404':
+          description: Not Found
+          schema:
+            type: object
+            properties:
+              ProblemDetails:
+                $ref: '#/definitions/ProblemDetails'
+    put:
+      description: This method updates the information about a meService resource
+      operationId: ServicesServiceId.PUT
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/Body.ServiceInfo'
+      responses:
+        '200':
+          description: 'Upon success, a response body containing data type describing the updated ServiceInfo is returned'
+          schema:
+            type: object
+            properties:
+              ServiceInfo:
+                $ref: '#/definitions/ServiceInfo'
+          examples:
+            application/json:
+              ServiceInfo:
+                serInstanceId: 'ServiceInstance123'
+                serName: 'ExampleService'
+                serCategory:
+                  href: 'catItem1'
+                  id: 'id12345'
+                  name: 'RNI'
+                  version: 'version1'
+                version: 'ServiceVersion1'
+                state: 'ACTIVE'
+                transportId: 'Rest1'
+                transportInfo:
+                  id: 'TransId12345'
+                  name: 'REST'
+                  description: 'REST API'
+                  type: 'REST_HTTP'
+                  protocol: 'HTTP'
+                  version: '2.0'
+                  endpoint:
+                    uris:
+                      - '/meMp1/service/EntryPoint'
+                    addresses:
+                      - host: '192.0.2.0'
+                        port: 8080
+                  security:
+                    oAuth2Info:
+                      grantTypes: 'OAUTH2_CLIENT_CREDENTIALS'
+                      tokenEndpoint: '/meMp1/security/TokenEndPoint'
+                serializer: 'JSON'
         '400':
           description: Bad Request
           schema:
@@ -615,6 +931,9 @@ paths:
         - $ref: '#/parameters/Query.Ser_instance_id'
         - $ref: '#/parameters/Query.Ser_name'
         - $ref: '#/parameters/Query.Ser_category_id'
+        - $ref: '#/parameters/Query.Consumed_LocalOnly'
+        - $ref: '#/parameters/Query.Is_local'
+        - $ref: '#/parameters/Query.Locality_types'
       responses:
         '200':
           description: It is used to indicate nonspecific success. The response body contains a representation of the resource.
@@ -627,109 +946,38 @@ paths:
                   $ref: '#/definitions/ServiceInfo'
           examples:
             application/json:
-              - ServiceInfo:
-                  serInstanceId: ServiceInstance123
-                  serName: ExampleService
+              -  ServiceInfo:
+                  serInstanceId: 'ServiceInstance123'
+                  serName: 'ExampleService'
                   serCategory:
-                    href: catItem1
-                    id: id12345
-                    name: RNI
-                    version: version1
-                  version: ServiceVersion1
-                  state: ACTIVE
-                  transportId: Rest1
+                    href: 'catItem1'
+                    id: 'id12345'
+                    name: 'RNI'
+                    version: 'version1'
+                  version: 'ServiceVersion1'
+                  state: 'ACTIVE'
+                  transportId: 'Rest1'
                   transportInfo:
-                    id: TransId12345
-                    name: REST
-                    description: REST API
-                    type: JSON
-                    protocol: HTTP
+                    id: 'TransId12345'
+                    name: 'REST'
+                    description: 'REST API'
+                    type: 'REST_HTTP'
+                    protocol: 'HTTP'
                     version: '2.0'
                     endpoint:
                       uris:
-                        - /meMp1/service/EntryPoint
+                        - '/meMp1/service/EntryPoint'
                       addresses:
-                        - host: 192.0.2.0
-                          port: '8080'
+                        - host: '192.0.2.0'
+                          port: 8080
                     security:
                       oAuth2Info:
-                        grantTypes: OAUTH2_CLIENT_CREDENTIALS
-                        tokenEndpoint: /meMp1/security/TokenEndPoint
-                  serializer: JSON
-        '400':
-          description: Bad Request
-          schema:
-            type: object
-            properties:
-              ProblemDetails:
-                $ref: '#/definitions/ProblemDetails'
-        '403':
-          description: Forbidden
-          schema:
-            type: object
-            required:
-              - ProblemDetails
-            properties:
-              ProblemDetails:
-                $ref: '#/definitions/ProblemDetails'
-        '404':
-          description: Not Found
-          schema:
-            type: object
-            properties:
-              ProblemDetails:
-                $ref: '#/definitions/ProblemDetails'
-    post:
-      description: This method is used to create a meService resource. This method is typically used in "service availability update and new service registration" procedure
-      operationId: Services.POST
-      produces:
-        - application/json
-      parameters:
-        - $ref: '#/parameters/Body.ServiceInfo'
-      responses:
-        '201':
-          description: 'Upon success, the HTTP response shall include a Location HTTP header that contains the resource URI of the created resource.'
-          headers:
-            location: 
-              description: The resource URI of the created resource
-              type: string
-              format: uri
-          schema:
-            type: object
-            properties:
-              ServiceInfo:
-                $ref: '#/definitions/ServiceInfo'
-          examples:
-            application/json:
-              ServiceInfo:
-                serInstanceId: ServiceInstance123
-                serName: ExampleService
-                serCategory:
-                  href: catItem1
-                  id: id12345
-                  name: RNI
-                  version: version1
-                version: ServiceVersion1
-                state: ACTIVE
-                transportId: Rest1
-                transportInfo:
-                  id: TransId12345
-                  name: REST
-                  description: REST API
-                  type: JSON
-                  protocol: HTTP
-                  version: '2.0'
-                  endpoint:
-                    uris:
-                      - /meMp1/service/EntryPoint
-                    addresses:
-                      - host: 192.0.2.0
-                        port: '8080'
-                  security:
-                    oAuth2Info:
-                      grantTypes: OAUTH2_CLIENT_CREDENTIALS
-                      tokenEndpoint: /meMp1/security/TokenEndPoint
-                serializer: JSON
+                        grantTypes: 'OAUTH2_CLIENT_CREDENTIALS'
+                        tokenEndpoint: '/meMp1/security/TokenEndPoint'
+                  serializer: 'JSON'
+                  scopeOfLocality: 'MEC_SYSTEM'
+                  consumedLocalOnly: true
+                  isLocal: false
         '400':
           description: Bad Request
           schema:
@@ -772,34 +1020,34 @@ paths:
           examples:
             application/json:
               ServiceInfo:
-                serInstanceId: ServiceInstance123
-                serName: ExampleService
+                serInstanceId: 'ServiceInstance123'
+                serName: 'ExampleService'
                 serCategory:
-                  href: catItem1
-                  id: id12345
-                  name: RNI
-                  version: version1
-                version: ServiceVersion1
-                state: ACTIVE
-                transportId: Rest1
+                  href: 'catItem1'
+                  id: 'id12345'
+                  name: 'RNI'
+                  version: 'version1'
+                version: 'ServiceVersion1'
+                state: 'ACTIVE'
+                transportId: 'Rest1'
                 transportInfo:
-                  id: TransId12345
-                  name: REST
-                  description: REST API
-                  type: JSON
-                  protocol: HTTP
+                  id: 'TransId12345'
+                  name: 'REST'
+                  description: 'REST API'
+                  type: 'REST_HTTP'
+                  protocol: 'HTTP'
                   version: '2.0'
                   endpoint:
                     uris:
-                      - /meMp1/service/EntryPoint
+                      - '/meMp1/service/EntryPoint'
                     addresses:
-                      - host: 192.0.2.0
-                        port: '8080'
+                      - host: '192.0.2.0'
+                        port: 8080
                   security:
                     oAuth2Info:
-                      grantTypes: OAUTH2_CLIENT_CREDENTIALS
-                      tokenEndpoint: /meMp1/security/TokenEndPoint
-                serializer: JSON
+                      grantTypes: 'OAUTH2_CLIENT_CREDENTIALS'
+                      tokenEndpoint: '/meMp1/security/TokenEndPoint'
+                serializer: 'JSON'
         '400':
           description: Bad Request
           schema:
@@ -818,82 +1066,6 @@ paths:
                 $ref: '#/definitions/ProblemDetails'
         '404':
           description: Not Found
-          schema:
-            type: object
-            properties:
-              ProblemDetails:
-                $ref: '#/definitions/ProblemDetails'
-    put:
-      description: This method updates the information about a meService resource
-      operationId: ServicesServiceId.PUT
-      produces:
-        - application/json
-      parameters:
-        - $ref: '#/parameters/Body.ServiceInfo'
-      responses:
-        '200':
-          description: 'Upon success, a response body containing data type describing the updated ServiceInfo is returned'
-          schema:
-            type: object
-            properties:
-              ServiceInfo:
-                $ref: '#/definitions/ServiceInfo'
-          examples:
-            application/json:
-              ServiceInfo:
-                serInstanceId: ServiceInstance123
-                serName: ExampleService
-                serCategory:
-                  href: catItem1
-                  id: id12345
-                  name: RNI
-                  version: version1
-                version: ServiceVersion1
-                state: ACTIVE
-                transportId: Rest1
-                transportInfo:
-                  id: TransId12345
-                  name: REST
-                  description: REST API
-                  type: JSON
-                  protocol: HTTP
-                  version: '2.0'
-                  endpoint:
-                    uris:
-                      - /meMp1/service/EntryPoint
-                    addresses:
-                      - host: 192.0.2.0
-                        port: '8080'
-                  security:
-                    oAuth2Info:
-                      grantTypes: OAUTH2_CLIENT_CREDENTIALS
-                      tokenEndpoint: /meMp1/security/TokenEndPoint
-                serializer: JSON
-        '400':
-          description: Bad Request
-          schema:
-            type: object
-            properties:
-              ProblemDetails:
-                $ref: '#/definitions/ProblemDetails'
-        '403':
-          description: Forbidden
-          schema:
-            type: object
-            required:
-              - ProblemDetails
-            properties:
-              ProblemDetails:
-                $ref: '#/definitions/ProblemDetails'
-        '404':
-          description: Not Found
-          schema:
-            type: object
-            properties:
-              ProblemDetails:
-                $ref: '#/definitions/ProblemDetails'
-        '412':
-          description: Precondition Failed
           schema:
             type: object
             properties:
@@ -975,7 +1147,7 @@ paths:
                 $ref: '#/definitions/ProblemDetails'
   /transports:
     get:
-      description: This method retrieves information about a list of available transports. This method is typically used by a service-producing application to discover transports provided by the mobile edge platform in the "transport information query" procedure
+      description: This method retrieves information about a list of available transports. This method is typically used by a service-producing application to discover transports provided by the MEC platform in the "transport information query" procedure
       operationId: Transports.GET
       produces:
         - application/json
@@ -1013,17 +1185,40 @@ paths:
               ProblemDetails:
                 $ref: '#/definitions/ProblemDetails'
 definitions:
+  ServiceAvailabilityNotification.Services:
+    description: This is the information about the services whose availability has changed..
+    type: array
+    items:
+      $ref: '#/definitions/ServiceInfo'
+  ServiceAvailabilityNotification.NotificationType:
+    description: Shall be set to ServiceAvailabilityNotification.
+    type: string
+    example: 'ServiceAvailabilityNotification'
+  ServiceAvailabilityNotification:
+    description: This type represents the information that the MEC platform notifies the subscribed application instance about  the corresponding application instance termination/stop.
+    type: object
+    required:
+      - notificationType
+      - Services
+      - _links
+    properties:
+      notificationType:
+        $ref: '#/definitions/ServiceAvailabilityNotification.NotificationType'
+      Services:
+        $ref: '#/definitions/ServiceAvailabilityNotification.Services'
+      _links:
+        $ref: '#/definitions/Subscription'
   AppTerminationNotification.MaxGracefulTimeout:
     description: Maximum timeout value in seconds for graceful termination or graceful stop of an application instance.
-    type: string
+    type: integer
     format: uint32
     example: 10
   AppTerminationNotification.NotificationType:
     description: Shall be set to AppTerminationNotification.
     type: string
-    example: AppTerminationNotification
+    example: 'AppTerminationNotification'
   AppTerminationNotification:
-    description: This type represents the information that the mobile edge platform notifies the subscribed application instance about  the corresponding application instance termination/stop.
+    description: This type represents the information that the MEC platform notifies the subscribed application instance about  the corresponding application instance termination/stop.
     type: object
     required:
       - notificationType
@@ -1036,51 +1231,22 @@ definitions:
         $ref: '#/definitions/AppTerminationNotification.MaxGracefulTimeout'
       _links:
         $ref: '#/definitions/Subscription'
-  AppTerminationNotificationSubscription.AppInstanceId:
-    description: It is used as the filtering criterion for the subscribed events.
-    type: string
-    example: ID1
-  AppTerminationNotificationSubscription.CallbackReference:
-    description: URI selected by the mobile edge application instance to receive notifications on the subscribed mobile edge application instance management information. This shall be included in both the request and the response.
-    type: string
-    format: uri
-  AppTerminationNotificationSubscription:
-    description: This type represents the information that the mobile edge platform notifies the subscribed application instance about  the corresponding application instance termination/stop.
-    type: object
-    required:
-      - subscriptionType
-      - callbackReference
-      - _links
-      - appInstanceId
-    properties:
-      subscriptionType:
-        $ref: '#/definitions/AppTerminationNotificationSubscription.SubscriptionType'
-      callbackReference:
-        $ref: '#/definitions/AppTerminationNotificationSubscription.CallbackReference'
-      _links:
-        $ref: '#/definitions/Self'
-      appInstanceId:
-        $ref: '#/definitions/AppTerminationNotificationSubscription.AppInstanceId'
-  AppTerminationNotificationSubscription.SubscriptionType:
-    description: Shall be set to AppTerminationNotificationSubscription.
-    type: string
-    example: AppTerminationNotificationSubscription
   CategoryRef.Href:
     description: Reference of the catalogue
     type: string
-    example: catItem1
+    example: 'catItem1'
   CategoryRef.Id:
     description: Unique identifier of the category
     type: string
-    example: id12345
+    example: 'id12345'
   CategoryRef.Name:
     description: Name of the category
     type: string
-    example: RNI
+    example: 'RNI'
   CategoryRef.Version:
     description: Category version
     type: string
-    example: version1
+    example: 'version1'
   CategoryRef:
     description: This type represents the category reference
     type: object
@@ -1099,7 +1265,7 @@ definitions:
       version:
         $ref: '#/definitions/CategoryRef.Version'
   CurrentTime:
-    description: This type represents the information provided by the mobile edge platform in response to the Get Platform Time Request message.
+    description: This type represents the information provided by the MEC platform in response to the Get Platform Time Request message.
     type: object
     required:
       - nanoSeconds
@@ -1122,7 +1288,7 @@ definitions:
           - TRACEABLE
           - NONTRACEABLE
         description: Platform Time Source status. 1 = TRACEABLE - time source is locked to the UTC time source. 2 = NONTRACEABLE - time source is not locked to the UTC time source
-        example: TRACEABLE
+        example: 'TRACEABLE'
   DestinationInterface.InterfaceType:
     description: Type of the interface
     type: string
@@ -1130,15 +1296,15 @@ definitions:
       - TUNNEL
       - MAC
       - IP
-    example: TUNNEL
+    example: 'TUNNEL'
   DestinationInterface.IpAddress:
     description: IP address of the remote destination
     type: string
-    example: 192.0.2.0
+    example: '192.0.2.0'
   DestinationInterface.MacAddress:
     description: Source address identifies the MAC address of the interface
     type: string
-    example: 02-00-00-00-00-00
+    example: '02-00-00-00-00-00'
   DestinationInterface:
     description: This type represents the destination interface.
     type: object
@@ -1158,29 +1324,29 @@ definitions:
   DnsRule.DomainName:
     description: FQDN resolved by the DNS rule
     type: string
-    example: www.example.com
+    example: 'www.example.com'
   DnsRule.Id:
     description: Identifies the DNS Rule
     type: string
-    example: dnsRule1
+    example: 'dnsRule1'
   DnsRule.IpAddress:
     description: IP address associated with the FQDN resolved by the DNS rule
     type: string
-    example: 192.0.2.0
+    example: '192.0.2.0'
   DnsRule.IpAddressType:
     description: IP address type
     type: string
     enum:
       - IP_V6
       - IP_V4
-    example: IP_V6
+    example: 'IP_V6'
   DnsRule.State:
     description: DNS rule state
     type: string
     enum:
       - ACTIVE
       - INACTIVE
-    example: ACTIVE
+    example: 'ACTIVE'
   DnsRule.Ttl:
     description: Time to live value
     type: integer
@@ -1211,12 +1377,12 @@ definitions:
   EndPointInfo.Address.Host:
     description: Host portion of the address
     type: string
-    example: 192.0.2.0
+    example: '192.0.2.0'
   EndPointInfo.Address.Port:
     description: Port portion of the address
     type: integer
     format: uint32
-    example: '8080'
+    example: 8080
   EndPointInfo.Address:
     description: A IP address and port pair
     type: object
@@ -1237,7 +1403,7 @@ definitions:
     description: Entry point information of the service
     type: string
     format: uri
-    example: /meMp1/service/EntryPoint
+    example: '/meMp1/service/EntryPoint'
   EndPointInfo.Uris:
     description: 'Entry point information of the service as string, formatted according to URI syntax'
     type: array
@@ -1258,7 +1424,7 @@ definitions:
     type: string
     format: uri
     readOnly: true
-    example: /meMp1/example
+    example: '/meMp1/example'
   Mp1SubscriptionLinkList.Links:
     description: Self-referring URI.
     type: object
@@ -1287,7 +1453,7 @@ definitions:
         description: The values are as defined in the "subscriptionType" attribute for each different Mp1 event subscription data type.
         type: string
   Mp1SubscriptionLinkList:
-    description: This type represents a list of links related to currently existing subscriptions for a mobile edge application instance. This information is returned when sending a request to receive current subscriptions.
+    description: This type represents a list of links related to currently existing subscriptions for a MEC application instance. This information is returned when sending a request to receive current subscriptions.
     type: object
     required:
       - _links
@@ -1333,12 +1499,12 @@ definitions:
       - OAUTH2_IMPLICIT_GRANT
       - OAUTH2_RESOURCE_OWNER
       - OAUTH2_CLIENT_CREDENTIALS
-    example: OAUTH2_CLIENT_CREDENTIALS
+    example: 'OAUTH2_CLIENT_CREDENTIALS'
   SecurityInfo.OAuth2Info.TokenEndpoint:
     description: The token endpoint
     type: string
     format: uri
-    example: /meMp1/security/TokenEndPoint
+    example: '/meMp1/security/TokenEndPoint'
   SecurityInfo.OAuth2Info:
     description: Parameters related to use of OAuth 2.0
     required:
@@ -1367,17 +1533,15 @@ definitions:
         $ref: '#/definitions/LinkType'
     readOnly: true
   SerAvailabilityNotificationSubscription.CallbackReference:
-    description: URI selected by the mobile edge application instance to receive notifications on the subscribed mobile edge service availability information. This shall be included in both the request and the response.
+    description: URI selected by the MEC application instance to receive notifications on the subscribed MEC service availability information and app termination information. This shall be included in both the request and the response.
     type: string
     format: uri
   SerAvailabilityNotificationSubscription:
-    description: This type represents a subscription to the notifications from the mobile edge platform regarding the availability of a mobile edge service or a list of mobile edge services.
+    description: This type represents a SerAvailabilityNotificationSubscription subscription to the notifications from the MEC platform regarding the availability and termination of a MEC service or a list of MEC services.
     type: object
     required:
       - subscriptionType
       - callbackReference
-      - _links
-      - filteringCriteria
     properties:
       subscriptionType:
         $ref: '#/definitions/SerAvailabilityNotificationSubscription.SubscriptionType'
@@ -1390,7 +1554,35 @@ definitions:
   SerAvailabilityNotificationSubscription.SubscriptionType:
     description: Shall be set to SerAvailabilityNotificationSubscription.
     type: string
-    example: SerAvailabilityNotificationSubscription
+    example: 'SerAvailabilityNotificationSubscription'
+  AppTerminationNotificationSubscription.CallbackReference:
+    description: URI selected by the MEC application instance to receive notifications on the subscribed MEC service availability information and app termination information. This shall be included in both the request and the response.
+    type: string
+    format: uri
+  AppTerminationNotificationSubscription:
+    description: This type represents a AppTerminationNotificationSubscription subscription to the notifications from the MEC platform regarding the availability and termination of a MEC service or a list of MEC services.
+    type: object
+    required:
+      - subscriptionType
+      - callbackReference
+      - appInstanceId
+    properties:
+      subscriptionType:
+        $ref: '#/definitions/AppTerminationNotificationSubscription.SubscriptionType'
+      callbackReference:
+        $ref: '#/definitions/AppTerminationNotificationSubscription.CallbackReference'
+      _links:
+        $ref: '#/definitions/Self'
+      appInstanceId:
+        $ref: '#/definitions/AppTerminationNotificationSubscription.AppInstanceId'
+  AppTerminationNotificationSubscription.SubscriptionType:
+    description: Shall be set to AppTerminationNotificationSubscription.
+    type: string
+    example: 'AppTerminationNotificationSubscription'
+  AppTerminationNotificationSubscription.AppInstanceId:
+    description: It is used as the filtering criterion for the subscribed events.
+    type: string
+    example: 'AppInst1'
   SerializerTypes:
     description: The enumeration SerializerTypes represents types of serializers
     type: string
@@ -1398,32 +1590,51 @@ definitions:
       - JSON
       - XML
       - PROTOBUF3
-    example: JSON
+    example: 'JSON'
+  LocalityTypes:
+    description: The scope of locality as expressed by "consumedLocalOnly" and "isLocal". If absent, defaults to MEC_HOST
+    type: string
+    enum:
+      - MEC_SYSTEM
+      - MEC_HOST
+      - NFVI_POP
+      - ZONE
+      - ZONE_GROUP
+      - NFVI_NODE
+    example: 'MEC_SYSTEM'
   ServiceInfo.SerInstanceId:
-    description: Identifier of the service instance assigned by the MEPM / mobile edge platform.
+    description: Identifier of the service instance assigned by the MEPM / MEC platform.
     type: string
-    example: ServiceInstance123
+    example: 'ServiceInstance123'
   ServiceInfo.SerName:
-    description: The name of the service. This is how the service producing mobile edge application identifies the service instance it produces.
+    description: The name of the service. This is how the service producing MEC application identifies the service instance it produces.
     type: string
-    example: ExampleService
+    example: 'ExampleService'
   ServiceInfo.State:
     description: Contains the state
     type: string
     enum:
       - ACTIVE
       - INACTIVE
-    example: ACTIVE
+    example: 'ACTIVE'
   ServiceInfo.TransportId:
     description: 'Identifier of the platform-provided transport to be used by the service. Valid identifiers may be obtained using the "Transport information query" procedure. May be present in POST requests to signal the use of a platform-provided transport for the service, and shall be absent otherwise.'
     type: string
-    example: Rest1
+    example: 'Rest1'
   ServiceInfo.Version:
     description: Service version
     type: string
-    example: ServiceVersion1
+    example: 'ServiceVersion1'
+  ServiceInfo.ConsumedLocalOnly:
+    description: Indicate whether the service can only be consumed by the MEC applications located in the same locality (as defined by scopeOfLocality) as this service instance
+    type: boolean
+    example: false
+  ServiceInfo.IsLocal:
+    description: Indicate whether the service is located in the same locality (as defined by scopeOfLocality) as the consuming MEC application 
+    type: boolean
+    example: true
   ServiceInfo:
-    description: This type represents the general information of a mobile edge service.
+    description: This type represents the general information of a MEC service.
     type: object
     required:
       - serName
@@ -1447,6 +1658,12 @@ definitions:
         $ref: '#/definitions/TransportInfo'
       serializer:
         $ref: '#/definitions/SerializerTypes'
+      scopeOfLocality:
+        $ref: '#/definitions/LocalityTypes'
+      consumedLocalOnly:
+        $ref: '#/definitions/ServiceInfo.ConsumedLocalOnly'
+      isLocal:
+        $ref: '#/definitions/ServiceInfo.IsLocal'
   Subscription:
     description: A link to the related subscription
     type: object
@@ -1467,7 +1684,7 @@ definitions:
       - NONE
       - SYMMETRIC_KEY
       - AUTO_KEY
-    example: NONE
+    example: 'NONE'
   TimingCaps.NtpServers.DelayReqMaxRate:
     description: Acceptable maximum rate of the Delay_Req messages in packets per second
     type: integer
@@ -1491,18 +1708,18 @@ definitions:
   TimingCaps.NtpServers.NtpServerAddr:
     description: NTP server address
     type: string
-    example: 192.0.2.0
+    example: '192.0.2.0'
   TimingCaps.NtpServers.NtpServerAddrType:
     description: Address type of NTP server
     type: string
     enum:
       - IP_ADDRESS
       - DNS_NAME
-    example: IP_ADDRESS
+    example: 'IP_ADDRESS'
   TimingCaps.NtpServers.PtpMasterIpAddress:
     description: PTP Master IP Address
     type: string
-    example: 192.0.2.0
+    example: '192.0.2.0'
   TimingCaps.NtpServers.PtpMasterLocalPriority:
     description: PTP Master local priority
     type: integer
@@ -1566,7 +1783,7 @@ definitions:
         description: 'The nanoseconds part of the time. Time is defined as Unix-time since January 1, 1970, 00:00:00 UTC'
         example: 0
   TimingCaps:
-    description: This type represents the information provided by the mobile edge platform in response to the Timing capabilities Query message.
+    description: This type represents the information provided by the MEC platform in response to the Timing capabilities Query message.
     type: object
     properties:
       timeStamp:
@@ -1584,7 +1801,7 @@ definitions:
   TrafficFilter.Address:
     description: Identify the traffic ip address.
     type: string
-    example: 192.168.1.1
+    example: '192.168.1.1'
   TrafficFilter.DSCP:
     description: Used to match all IPv4 packets that have the same Differentiated Services Code Point (DSCP)
     type: integer
@@ -1690,18 +1907,18 @@ definitions:
       - PASSTHROUGH
       - DUPLICATE_DECAPSULATED
       - DUPLICATE_AS_IS
-    example: DROP
+    example: 'DROP'
   TrafficRule.FilterType:
     description: Definition of filter per FLOW or PACKET. If flow the filter match UE->EPC packet and the reverse packet is handled in the same context
     type: string
     enum:
       - FLOW
       - PACKET
-    example: FLOW
+    example: 'FLOW'
   TrafficRule.Id:
     description: Identify the traffic rule.
     type: string
-    example: TrafficRule1
+    example: 'TrafficRule1'
   TrafficRule.Priority:
     description: 'Priority of this traffic rule. If traffic rule conflicts, the one with higher priority take precedence'
     type: integer
@@ -1713,7 +1930,7 @@ definitions:
     enum:
       - ACTIVE
       - INACTIVE
-    example: ACTIVE
+    example: 'ACTIVE'
   TrafficRule:
     description: This type represents the general information of a traffic rule.
     type: object
@@ -1732,7 +1949,9 @@ definitions:
       priority:
         $ref: '#/definitions/TrafficRule.Priority'
       trafficFilter:
-        $ref: '#/definitions/TrafficFilter'
+        type: array
+        items:
+          $ref: '#/definitions/TrafficFilter'
       action:
         $ref: '#/definitions/TrafficRule.Action'
       dstInterface:
@@ -1742,28 +1961,28 @@ definitions:
   TransportInfo.Description:
     description: Human-readable description of this transport
     type: string
-    example: REST API
+    example: 'REST API'
   TransportInfo.Id:
     description: The identifier of this transport
     type: string
-    example: TransId12345
+    example: 'TransId12345'
   TransportInfo.ImplSpecificInfo:
     description: Additional implementation specific details of the transport
     type: object
   TransportInfo.Name:
     description: The name of this transport
     type: string
-    example: REST
+    example: 'REST'
   TransportInfo.Protocol:
     description: The name of the protocol used. Shall be set to HTTP for a REST API.
     type: string
-    example: HTTP
+    example: 'HTTP'
   TransportInfo.Version:
     description: The version of the protocol used
     type: string
     example: '2.0'
   TransportInfo:
-    description: This type represents the general information of a mobile edge service.
+    description: This type represents the general information of a MEC service.
     type: object
     required:
       - id
@@ -1803,7 +2022,7 @@ definitions:
       - RPC
       - RPC_STREAMING
       - WEBSOCKET
-    example: JSON
+    example: 'JSON'
   TunnelInfo.TunnelDstAddress:
     description: Destination address of the tunnel
     type: string
@@ -1818,7 +2037,7 @@ definitions:
     enum:
       - GTP_U
       - GRE
-    example: GTP_U
+    example: 'GTP_U'
   TunnelInfo:
     description: This type represents the tunnel information.
     type: object

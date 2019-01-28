@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Mp1 API",
-    "version": "1.1.1",
+    "version": "2.0.5",
     "description": "The ETSI MEC ISG MEC011 Application Enablement API described using OpenAPI",
     "license": {
       "name": "ETSI Forge copyright notice",
@@ -10,11 +10,11 @@
     }
   },
   "externalDocs": {
-    "description": "ETSI GS MEC011 Application Enablement API, V1.1.1",
-    "url": "http://www.etsi.org/deliver/etsi_gs/MEC/001_099/011/01.01.01_60/gs_mec011v010101p.pdf"
+    "description": "ETSI GS MEC011 Application Enablement API, V2.0.5",
+    "url": "https://docbox.etsi.org/ISG/MEC/70-Draft/0011v211Plat.App.Enabl/MEC-0011v211Plat.App.Enablv205.zip"
   },
   "host": "127.0.0.1:8081",
-  "basePath": "/exampleAPI/mp1/v1/",
+  "basePath": "/mp1/v1/",
   "schemes": [
     "http",
     "https"
@@ -28,11 +28,16 @@
   "parameters": {
     "Body.AppTerminationNotificationSubscription": {
       "name": "AppTerminationNotificationSubscription",
-      "description": "Entity body in the request contains a subscription to the mobile edge application termination notifications that is to be created.",
+      "description": "Entity body in the request contains a subscription to the MEC application termination notifications that is to be created.",
       "in": "body",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/AppTerminationNotificationSubscription"
+        "type": "object",
+        "properties": {
+          "AppTerminationNotificationSubscription": {
+            "$ref": "#/definitions/AppTerminationNotificationSubscription"
+          }
+        }
       }
     },
     "Body.DnsRule": {
@@ -41,16 +46,26 @@
       "in": "body",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/DnsRule"
+        "type": "object",
+        "properties": {
+          "DnsRule": {
+            "$ref": "#/definitions/DnsRule"
+          }
+        }
       }
     },
     "Body.SerAvailabilityNotificationSubscription": {
       "name": "SerAvailabilityNotificationSubscription",
-      "description": "Entity body in the request contains a subscription to the mobile edge service availability notifications that is to be created.",
+      "description": "Entity body in the request contains a subscription to the MEC service availability notifications that is to be created.",
       "in": "body",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/SerAvailabilityNotificationSubscription"
+        "type": "object",
+        "properties": {
+          "SerAvailabilityNotificationSubscription": {
+            "$ref": "#/definitions/SerAvailabilityNotificationSubscription"
+          }
+        }
       }
     },
     "Body.ServiceInfo": {
@@ -59,7 +74,12 @@
       "in": "body",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/ServiceInfo"
+        "type": "object",
+        "properties": {
+          "ServiceInfo": {
+            "$ref": "#/definitions/ServiceInfo"
+          }
+        }
       }
     },
     "Body.TrafficRule": {
@@ -68,12 +88,17 @@
       "in": "body",
       "required": true,
       "schema": {
-        "$ref": "#/definitions/TrafficRule"
+        "type": "object",
+        "properties": {
+          "TrafficRule": {
+            "$ref": "#/definitions/TrafficRule"
+          }
+        }
       }
     },
     "Path.AppInstanceId": {
       "name": "appInstanceId",
-      "description": "Represents a mobile edge application instance. Note that the appInstanceId is allocated by the mobile edge platform manager.",
+      "description": "Represents a MEC application instance. Note that the appInstanceId is allocated by the MEC platform manager.",
       "in": "path",
       "required": true,
       "type": "string",
@@ -89,7 +114,7 @@
     },
     "Path.SubscriptionId": {
       "name": "subscriptionId",
-      "description": "Represents a subscription to the notifications from the mobile edge platform.",
+      "description": "Represents a subscription to the notifications from the MEC platform.",
       "in": "path",
       "required": true,
       "type": "string",
@@ -97,15 +122,18 @@
     },
     "Path.SubscriptionType": {
       "name": "subscriptionType",
-      "description": "Represents a subscription type to the notifications from the mobile edge platform.",
+      "description": "Represents a subscription type to the notifications from the MEC platform.",
       "in": "path",
       "required": true,
       "type": "string",
-      "format": "uri"
+      "enum": [
+        "SerAvailabilityNotificationSubscription",
+        "AppTerminationNotificationSubscription"
+      ]
     },
     "Path.ServiceId": {
       "name": "serviceId",
-      "description": "Represents a mobile edge service instance.",
+      "description": "Represents a MEC service instance.",
       "in": "path",
       "required": true,
       "type": "string",
@@ -121,14 +149,14 @@
     },
     "Query.Ser_category_id": {
       "name": "ser_category_id",
-      "description": "A mobile edge application instance may use ser_category_id as an input parameter to query the availability of a list of mobile edge service instances in a serCategory. Either \"ser_instance_id\" or \"ser_name\" or \"ser_category_id\" or none of them shall be present.",
+      "description": "A MEC application instance may use ser_category_id as an input parameter to query the availability of a list of MEC service instances in a serCategory. Either \"ser_instance_id\" or \"ser_name\" or \"ser_category_id\" or none of them shall be present.",
       "in": "query",
       "required": false,
       "type": "string"
     },
     "Query.Ser_instance_id": {
       "name": "ser_instance_id",
-      "description": "A mobile edge application instance may use multiple ser_instance_ids as an input parameter to query the availability of a list of mobile edge service instances. Either \"ser_instance_id\" or \"ser_name\" or \"ser_category_id\" or none of them shall be present.",
+      "description": "A MEC application instance may use multiple ser_instance_ids as an input parameter to query the availability of a list of MEC service instances. Either \"ser_instance_id\" or \"ser_name\" or \"ser_category_id\" or none of them shall be present.",
       "in": "query",
       "required": false,
       "type": "array",
@@ -138,13 +166,34 @@
     },
     "Query.Ser_name": {
       "name": "ser_name",
-      "description": "A mobile edge application instance may use multiple ser_names as an input parameter to query the availability of a list of mobile edge service instances. Either \"ser_instance_id\" or \"ser_name\" or \"ser_category_id\" or none of them shall be present.",
+      "description": "A MEC application instance may use multiple ser_names as an input parameter to query the availability of a list of MEC service instances. Either \"ser_instance_id\" or \"ser_name\" or \"ser_category_id\" or none of them shall be present.",
       "in": "query",
       "required": false,
       "type": "array",
       "items": {
         "type": "string"
       }
+    },
+    "Query.Locality_types": {
+      "name": "locality_types",
+      "in": "query",
+      "description": "A MEC application instance may use scope_of_locality as an input parameter to query the availability of a list of MEC service instances with a certain scope of locality",
+      "required": false,
+      "type": "string"
+    },
+    "Query.Is_local": {
+      "name": "is_local",
+      "in": "query",
+      "description": "Indicate whether the service is located in the same locality (as defined by scopeOfLocality) as the consuming MEC application",
+      "required": false,
+      "type": "boolean"
+    },
+    "Query.Consumed_LocalOnly": {
+      "name": "consumed_localonly",
+      "in": "query",
+      "description": "Indicate whether the service can only be consumed by the MEC applications located in the same locality (as defined by scopeOfLocality) as this service instance",
+      "required": false,
+      "type": "boolean"
     }
   },
   "paths": {
@@ -155,7 +204,7 @@
         }
       ],
       "get": {
-        "description": "This method retrieves information about all the DNS rules associated with a mobile edge application instance.",
+        "description": "This method retrieves information about all the DNS rules associated with a MEC application instance.",
         "operationId": "ApplicationsDnsRules.GET",
         "produces": [
           "application/json"
@@ -175,16 +224,18 @@
               }
             },
             "examples": {
-              "application/json": [{
-                "DnsRule": {
-                  "dnsRuleId": "DnsRule1",
-                  "domainName": "www.example.com",
-                  "ipAddressType": "IP_V4",
-                  "ipAddress": "146.241.7.3",
-                  "ttl": 300,
-                  "state": "ACTIVE"
+              "application/json": [
+                {
+                  "DnsRule": {
+                    "dnsRuleId": "DnsRule1",
+                    "domainName": "www.example.com",
+                    "ipAddressType": "IP_V4",
+                    "ipAddress": "146.241.7.3",
+                    "ttl": 300,
+                    "state": "ACTIVE"
+                  }
                 }
-              }]
+              ]
             }
           },
           "400": {
@@ -236,7 +287,7 @@
         }
       ],
       "get": {
-        "description": "This method retrieves information about a DNS rule associated with a mobile edge application instance.",
+        "description": "This method retrieves information about a DNS rule associated with a MEC application instance.",
         "operationId": "ApplicationsDnsRule.GET",
         "produces": [
           "application/json"
@@ -451,19 +502,19 @@
         }
       },
       "post": {
-        "description": "The POST method may be used to create a new subscription. One example use case is to create a new subscription to the mobile edge service availability notifications. Upon success, the response contains entity body describing the created subscription.",
+        "description": "The POST method may be used to create a new subscription. One example use case is to create a new subscription to the MEC service availability notifications. Upon success, the response contains entity body describing the created subscription.",
         "operationId": "ApplicationsSubscriptions.POST",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/Body.AppTerminationNotificationSubscription"
+            "$ref": "#/parameters/Body.SerAvailabilityNotificationSubscription"
           }
         ],
         "responses": {
           "201": {
-            "description": "Entity body in the request contains a subscription to the mobile edge service availability notifications that is to be created.",
+            "description": "Entity body in the request contains a subscription to the MEC service availability notifications that is to be created.",
             "headers": {
               "location": {
                 "description": "The resource URI of the created resource",
@@ -474,8 +525,8 @@
             "schema": {
               "type": "object",
               "properties": {
-                "AppTerminationNotificationSubscription": {
-                  "$ref": "#/definitions/AppTerminationNotificationSubscription"
+                "SerAvailabilityNotificationSubscription": {
+                  "$ref": "#/definitions/SerAvailabilityNotificationSubscription"
                 }
               }
             }
@@ -543,8 +594,8 @@
             "schema": {
               "type": "object",
               "properties": {
-                "SerAvailabilityNotificationSubscription": {
-                  "$ref": "#/definitions/SerAvailabilityNotificationSubscription"
+                "AppTerminationNotificationSubscription": {
+                  "$ref": "#/definitions/AppTerminationNotificationSubscription"
                 }
               }
             }
@@ -632,7 +683,7 @@
         }
       ],
       "get": {
-        "description": "This method retrieves information about all the traffic rules associated with a mobile edge application instance.",
+        "description": "This method retrieves information about all the traffic rules associated with a MEC application instance.",
         "operationId": "ApplicationsTrafficRules.GET",
         "produces": [
           "application/json"
@@ -650,34 +701,6 @@
                   }
                 }
               }
-            },
-            "examples": {
-              "application/json": [{
-                "TrafficRule": {
-                  "trafficRuleId": "TrafficRule123",
-                  "serName": "ExampleService",
-                  "filterType": "FLOW",
-                  "priority": 1,
-                  "trafficFilter": {
-                    "srcAddress": [
-                      "192.168.2.0/24",
-                      "192.168.3.0/24"
-                    ],
-                    "dstAddress": [
-                      "192.127.4.100/32"
-                    ],
-                    "dstPort": [
-                      80
-                    ]
-                  },
-                  "action": "FORWARD_DECAPSULATED",
-                  "dstInterface": {
-                    "interfaceType": "IP",
-                    "dstIpAddress": "20.1.1.1"
-                  },
-                  "state": "ACTIVE"
-                }
-              }]
             }
           },
           "400": {
@@ -729,7 +752,7 @@
         }
       ],
       "get": {
-        "description": "This method retrieves information about all the traffic rules associated with a mobile edge application instance.",
+        "description": "This method retrieves information about all the traffic rules associated with a MEC application instance.",
         "operationId": "ApplicationsTrafficRule.GET",
         "produces": [
           "application/json"
@@ -749,21 +772,22 @@
               "application/json": {
                 "TrafficRule": {
                   "trafficRuleId": "TrafficRule123",
-                  "serName": "ExampleService",
                   "filterType": "FLOW",
                   "priority": 1,
-                  "trafficFilter": {
-                    "srcAddress": [
-                      "192.168.2.0/24",
-                      "192.168.3.0/24"
-                    ],
-                    "dstAddress": [
-                      "192.127.4.100/32"
-                    ],
-                    "dstPort": [
-                      80
-                    ]
-                  },
+                  "trafficFilter": [
+                    {
+                      "srcAddress": [
+                        "192.168.2.0/24",
+                        "192.168.3.0/24"
+                      ],
+                      "dstAddress": [
+                        "192.127.4.100/32"
+                      ],
+                      "dstPort": [
+                        "80"
+                      ]
+                    }
+                  ],
                   "action": "FORWARD_DECAPSULATED",
                   "dstInterface": {
                     "interfaceType": "IP",
@@ -813,7 +837,7 @@
         }
       },
       "put": {
-        "description": "This method retrieves information about all the traffic rules associated with a mobile edge application instance.",
+        "description": "This method retrieves information about all the traffic rules associated with a MEC application instance.",
         "operationId": "ApplicationsTrafficRules.PUT",
         "produces": [
           "application/json"
@@ -838,21 +862,22 @@
               "application/json": {
                 "TrafficRule": {
                   "trafficRuleId": "TrafficRule123",
-                  "serName": "ExampleService",
                   "filterType": "FLOW",
                   "priority": 1,
-                  "trafficFilter": {
-                    "srcAddress": [
-                      "192.168.2.0/24",
-                      "192.168.3.0/24"
-                    ],
-                    "dstAddress": [
-                      "192.127.4.100/32"
-                    ],
-                    "dstPort": [
-                      80
-                    ]
-                  },
+                  "trafficFilter": [
+                    {
+                      "srcAddress": [
+                        "192.168.2.0/24",
+                        "192.168.3.0/24"
+                      ],
+                      "dstAddress": [
+                        "192.127.4.100/32"
+                      ],
+                      "dstPort": [
+                        "80"
+                      ]
+                    }
+                  ],
                   "action": "FORWARD_DECAPSULATED",
                   "dstInterface": {
                     "interfaceType": "IP",
@@ -913,10 +938,15 @@
         }
       }
     },
-    "/services": {
+    "/applications/{appInstanceId}/services": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/Path.AppInstanceId"
+        }
+      ],
       "get": {
-        "description": "This method retrieves information about a list of meService resources. This method is typically used in \"service availability query\" procedure",
-        "operationId": "Services.GET",
+        "description": "This method retrieves information about a list of meService resources for a particular application. This method is typically used in \"service availability query\" procedure",
+        "operationId": "AppServices.GET",
         "produces": [
           "application/json"
         ],
@@ -929,6 +959,15 @@
           },
           {
             "$ref": "#/parameters/Query.Ser_category_id"
+          },
+          {
+            "$ref": "#/parameters/Query.Consumed_LocalOnly"
+          },
+          {
+            "$ref": "#/parameters/Query.Is_local"
+          },
+          {
+            "$ref": "#/parameters/Query.Locality_types"
           }
         ],
         "responses": {
@@ -946,47 +985,52 @@
               }
             },
             "examples": {
-              "application/json": [{
-                "ServiceInfo": {
-                  "serInstanceId": "ServiceInstance123",
-                  "serName": "ExampleService",
-                  "serCategory": {
-                    "href": "catItem1",
-                    "id": "id12345",
-                    "name": "RNI",
-                    "version": "version1"
-                  },
-                  "version": "ServiceVersion1",
-                  "state": "ACTIVE",
-                  "transportId": "Rest1",
-                  "transportInfo": {
-                    "id": "TransId12345",
-                    "name": "REST",
-                    "description": "REST API",
-                    "type": "JSON",
-                    "protocol": "HTTP",
-                    "version": "2.0",
-                    "endpoint": {
-                      "uris": [
-                        "/meMp1/service/EntryPoint"
-                      ],
-                      "addresses": [
-                        {
-                          "host": "192.0.2.0",
-                          "port": "8080"
-                        }
-                      ]
+              "application/json": [
+                {
+                  "ServiceInfo": {
+                    "serInstanceId": "ServiceInstance123",
+                    "serName": "ExampleService",
+                    "serCategory": {
+                      "href": "catItem1",
+                      "id": "id12345",
+                      "name": "RNI",
+                      "version": "version1"
                     },
-                    "security": {
-                      "oAuth2Info": {
-                        "grantTypes": "OAUTH2_CLIENT_CREDENTIALS",
-                        "tokenEndpoint": "/meMp1/security/TokenEndPoint"
+                    "version": "ServiceVersion1",
+                    "state": "ACTIVE",
+                    "transportId": "Rest1",
+                    "transportInfo": {
+                      "id": "TransId12345",
+                      "name": "REST",
+                      "description": "REST API",
+                      "type": "REST_HTTP",
+                      "protocol": "HTTP",
+                      "version": "2.0",
+                      "endpoint": {
+                        "uris": [
+                          "/meMp1/service/EntryPoint"
+                        ],
+                        "addresses": [
+                          {
+                            "host": "192.0.2.0",
+                            "port": 8080
+                          }
+                        ]
+                      },
+                      "security": {
+                        "oAuth2Info": {
+                          "grantTypes": "OAUTH2_CLIENT_CREDENTIALS",
+                          "tokenEndpoint": "/meMp1/security/TokenEndPoint"
+                        }
                       }
-                    }
-                  },
-                  "serializer": "JSON"
+                    },
+                    "serializer": "JSON",
+                    "scopeOfLocality": "MEC_HOST",
+                    "consumedLocalOnly": true,
+                    "isLocal": false
+                  }
                 }
-              }]
+              ]
             }
           },
           "400": {
@@ -1029,7 +1073,7 @@
       },
       "post": {
         "description": "This method is used to create a meService resource. This method is typically used in \"service availability update and new service registration\" procedure",
-        "operationId": "Services.POST",
+        "operationId": "AppServices.POST",
         "produces": [
           "application/json"
         ],
@@ -1074,7 +1118,7 @@
                     "id": "TransId12345",
                     "name": "REST",
                     "description": "REST API",
-                    "type": "JSON",
+                    "type": "REST_HTTP",
                     "protocol": "HTTP",
                     "version": "2.0",
                     "endpoint": {
@@ -1084,7 +1128,7 @@
                       "addresses": [
                         {
                           "host": "192.0.2.0",
-                          "port": "8080"
+                          "port": 8080
                         }
                       ]
                     },
@@ -1139,15 +1183,18 @@
         }
       }
     },
-    "/services/{serviceId}": {
+    "/applications/{appInstanceId}/services/{serviceId}": {
       "parameters": [
         {
           "$ref": "#/parameters/Path.ServiceId"
+        },
+        {
+          "$ref": "#/parameters/Path.AppInstanceId"
         }
       ],
       "get": {
         "description": "This method retrieves information about a meService resource. This method is typically used in \"service availability query\" procedure",
-        "operationId": "ServicesServiceId.GET",
+        "operationId": "AppServicesServiceId.GET",
         "produces": [
           "application/json"
         ],
@@ -1180,7 +1227,7 @@
                     "id": "TransId12345",
                     "name": "REST",
                     "description": "REST API",
-                    "type": "JSON",
+                    "type": "REST_HTTP",
                     "protocol": "HTTP",
                     "version": "2.0",
                     "endpoint": {
@@ -1190,7 +1237,7 @@
                       "addresses": [
                         {
                           "host": "192.0.2.0",
-                          "port": "8080"
+                          "port": 8080
                         }
                       ]
                     },
@@ -1284,7 +1331,7 @@
                     "id": "TransId12345",
                     "name": "REST",
                     "description": "REST API",
-                    "type": "JSON",
+                    "type": "REST_HTTP",
                     "protocol": "HTTP",
                     "version": "2.0",
                     "endpoint": {
@@ -1294,7 +1341,7 @@
                       "addresses": [
                         {
                           "host": "192.0.2.0",
-                          "port": "8080"
+                          "port": 8080
                         }
                       ]
                     },
@@ -1348,6 +1395,241 @@
           },
           "412": {
             "description": "Precondition Failed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ProblemDetails": {
+                  "$ref": "#/definitions/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/services": {
+      "get": {
+        "description": "This method retrieves information about a list of meService resources. This method is typically used in \"service availability query\" procedure",
+        "operationId": "Services.GET",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/Query.Ser_instance_id"
+          },
+          {
+            "$ref": "#/parameters/Query.Ser_name"
+          },
+          {
+            "$ref": "#/parameters/Query.Ser_category_id"
+          },
+          {
+            "$ref": "#/parameters/Query.Consumed_LocalOnly"
+          },
+          {
+            "$ref": "#/parameters/Query.Is_local"
+          },
+          {
+            "$ref": "#/parameters/Query.Locality_types"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "It is used to indicate nonspecific success. The response body contains a representation of the resource.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ServiceInfo": {
+                    "$ref": "#/definitions/ServiceInfo"
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "ServiceInfo": {
+                    "serInstanceId": "ServiceInstance123",
+                    "serName": "ExampleService",
+                    "serCategory": {
+                      "href": "catItem1",
+                      "id": "id12345",
+                      "name": "RNI",
+                      "version": "version1"
+                    },
+                    "version": "ServiceVersion1",
+                    "state": "ACTIVE",
+                    "transportId": "Rest1",
+                    "transportInfo": {
+                      "id": "TransId12345",
+                      "name": "REST",
+                      "description": "REST API",
+                      "type": "REST_HTTP",
+                      "protocol": "HTTP",
+                      "version": "2.0",
+                      "endpoint": {
+                        "uris": [
+                          "/meMp1/service/EntryPoint"
+                        ],
+                        "addresses": [
+                          {
+                            "host": "192.0.2.0",
+                            "port": 8080
+                          }
+                        ]
+                      },
+                      "security": {
+                        "oAuth2Info": {
+                          "grantTypes": "OAUTH2_CLIENT_CREDENTIALS",
+                          "tokenEndpoint": "/meMp1/security/TokenEndPoint"
+                        }
+                      }
+                    },
+                    "serializer": "JSON",
+                    "scopeOfLocality": "MEC_SYSTEM",
+                    "consumedLocalOnly": true,
+                    "isLocal": false
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ProblemDetails": {
+                  "$ref": "#/definitions/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "object",
+              "required": [
+                "ProblemDetails"
+              ],
+              "properties": {
+                "ProblemDetails": {
+                  "$ref": "#/definitions/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ProblemDetails": {
+                  "$ref": "#/definitions/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/services/{serviceId}": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/Path.ServiceId"
+        }
+      ],
+      "get": {
+        "description": "This method retrieves information about a meService resource. This method is typically used in \"service availability query\" procedure",
+        "operationId": "ServicesServiceId.GET",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "It is used to indicate nonspecific success. The response body contains a representation of the resource.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ServiceInfo": {
+                  "$ref": "#/definitions/ServiceInfo"
+                }
+              }
+            },
+            "examples": {
+              "application/json": {
+                "ServiceInfo": {
+                  "serInstanceId": "ServiceInstance123",
+                  "serName": "ExampleService",
+                  "serCategory": {
+                    "href": "catItem1",
+                    "id": "id12345",
+                    "name": "RNI",
+                    "version": "version1"
+                  },
+                  "version": "ServiceVersion1",
+                  "state": "ACTIVE",
+                  "transportId": "Rest1",
+                  "transportInfo": {
+                    "id": "TransId12345",
+                    "name": "REST",
+                    "description": "REST API",
+                    "type": "REST_HTTP",
+                    "protocol": "HTTP",
+                    "version": "2.0",
+                    "endpoint": {
+                      "uris": [
+                        "/meMp1/service/EntryPoint"
+                      ],
+                      "addresses": [
+                        {
+                          "host": "192.0.2.0",
+                          "port": 8080
+                        }
+                      ]
+                    },
+                    "security": {
+                      "oAuth2Info": {
+                        "grantTypes": "OAUTH2_CLIENT_CREDENTIALS",
+                        "tokenEndpoint": "/meMp1/security/TokenEndPoint"
+                      }
+                    }
+                  },
+                  "serializer": "JSON"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ProblemDetails": {
+                  "$ref": "#/definitions/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "object",
+              "required": [
+                "ProblemDetails"
+              ],
+              "properties": {
+                "ProblemDetails": {
+                  "$ref": "#/definitions/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "schema": {
               "type": "object",
               "properties": {
@@ -1478,7 +1760,7 @@
     },
     "/transports": {
       "get": {
-        "description": "This method retrieves information about a list of available transports. This method is typically used by a service-producing application to discover transports provided by the mobile edge platform in the \"transport information query\" procedure",
+        "description": "This method retrieves information about a list of available transports. This method is typically used by a service-producing application to discover transports provided by the MEC platform in the \"transport information query\" procedure",
         "operationId": "Transports.GET",
         "produces": [
           "application/json"
@@ -1539,9 +1821,41 @@
     }
   },
   "definitions": {
+    "ServiceAvailabilityNotification.Services": {
+      "description": "This is the information about the services whose availability has changed..",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ServiceInfo"
+      }
+    },
+    "ServiceAvailabilityNotification.NotificationType": {
+      "description": "Shall be set to ServiceAvailabilityNotification.",
+      "type": "string",
+      "example": "ServiceAvailabilityNotification"
+    },
+    "ServiceAvailabilityNotification": {
+      "description": "This type represents the information that the MEC platform notifies the subscribed application instance about  the corresponding application instance termination/stop.",
+      "type": "object",
+      "required": [
+        "notificationType",
+        "Services",
+        "_links"
+      ],
+      "properties": {
+        "notificationType": {
+          "$ref": "#/definitions/ServiceAvailabilityNotification.NotificationType"
+        },
+        "Services": {
+          "$ref": "#/definitions/ServiceAvailabilityNotification.Services"
+        },
+        "_links": {
+          "$ref": "#/definitions/Subscription"
+        }
+      }
+    },
     "AppTerminationNotification.MaxGracefulTimeout": {
       "description": "Maximum timeout value in seconds for graceful termination or graceful stop of an application instance.",
-      "type": "string",
+      "type": "integer",
       "format": "uint32",
       "example": 10
     },
@@ -1551,7 +1865,7 @@
       "example": "AppTerminationNotification"
     },
     "AppTerminationNotification": {
-      "description": "This type represents the information that the mobile edge platform notifies the subscribed application instance about  the corresponding application instance termination/stop.",
+      "description": "This type represents the information that the MEC platform notifies the subscribed application instance about  the corresponding application instance termination/stop.",
       "type": "object",
       "required": [
         "notificationType",
@@ -1569,45 +1883,6 @@
           "$ref": "#/definitions/Subscription"
         }
       }
-    },
-    "AppTerminationNotificationSubscription.AppInstanceId": {
-      "description": "It is used as the filtering criterion for the subscribed events.",
-      "type": "string",
-      "example": "ID1"
-    },
-    "AppTerminationNotificationSubscription.CallbackReference": {
-      "description": "URI selected by the mobile edge application instance to receive notifications on the subscribed mobile edge application instance management information. This shall be included in both the request and the response.",
-      "type": "string",
-      "format": "uri"
-    },
-    "AppTerminationNotificationSubscription": {
-      "description": "This type represents the information that the mobile edge platform notifies the subscribed application instance about  the corresponding application instance termination/stop.",
-      "type": "object",
-      "required": [
-        "subscriptionType",
-        "callbackReference",
-        "_links",
-        "appInstanceId"
-      ],
-      "properties": {
-        "subscriptionType": {
-          "$ref": "#/definitions/AppTerminationNotificationSubscription.SubscriptionType"
-        },
-        "callbackReference": {
-          "$ref": "#/definitions/AppTerminationNotificationSubscription.CallbackReference"
-        },
-        "_links": {
-          "$ref": "#/definitions/Self"
-        },
-        "appInstanceId": {
-          "$ref": "#/definitions/AppTerminationNotificationSubscription.AppInstanceId"
-        }
-      }
-    },
-    "AppTerminationNotificationSubscription.SubscriptionType": {
-      "description": "Shall be set to AppTerminationNotificationSubscription.",
-      "type": "string",
-      "example": "AppTerminationNotificationSubscription"
     },
     "CategoryRef.Href": {
       "description": "Reference of the catalogue",
@@ -1654,7 +1929,7 @@
       }
     },
     "CurrentTime": {
-      "description": "This type represents the information provided by the mobile edge platform in response to the Get Platform Time Request message.",
+      "description": "This type represents the information provided by the MEC platform in response to the Get Platform Time Request message.",
       "type": "object",
       "required": [
         "nanoSeconds",
@@ -1808,7 +2083,7 @@
       "description": "Port portion of the address",
       "type": "integer",
       "format": "uint32",
-      "example": "8080"
+      "example": 8080
     },
     "EndPointInfo.Address": {
       "description": "A IP address and port pair",
@@ -1907,7 +2182,7 @@
       }
     },
     "Mp1SubscriptionLinkList": {
-      "description": "This type represents a list of links related to currently existing subscriptions for a mobile edge application instance. This information is returned when sending a request to receive current subscriptions.",
+      "description": "This type represents a list of links related to currently existing subscriptions for a MEC application instance. This information is returned when sending a request to receive current subscriptions.",
       "type": "object",
       "required": [
         "_links"
@@ -2019,18 +2294,16 @@
       "readOnly": true
     },
     "SerAvailabilityNotificationSubscription.CallbackReference": {
-      "description": "URI selected by the mobile edge application instance to receive notifications on the subscribed mobile edge service availability information. This shall be included in both the request and the response.",
+      "description": "URI selected by the MEC application instance to receive notifications on the subscribed MEC service availability information and app termination information. This shall be included in both the request and the response.",
       "type": "string",
       "format": "uri"
     },
     "SerAvailabilityNotificationSubscription": {
-      "description": "This type represents a subscription to the notifications from the mobile edge platform regarding the availability of a mobile edge service or a list of mobile edge services.",
+      "description": "This type represents a SerAvailabilityNotificationSubscription subscription to the notifications from the MEC platform regarding the availability and termination of a MEC service or a list of MEC services.",
       "type": "object",
       "required": [
         "subscriptionType",
-        "callbackReference",
-        "_links",
-        "filteringCriteria"
+        "callbackReference"
       ],
       "properties": {
         "subscriptionType": {
@@ -2052,6 +2325,44 @@
       "type": "string",
       "example": "SerAvailabilityNotificationSubscription"
     },
+    "AppTerminationNotificationSubscription.CallbackReference": {
+      "description": "URI selected by the MEC application instance to receive notifications on the subscribed MEC service availability information and app termination information. This shall be included in both the request and the response.",
+      "type": "string",
+      "format": "uri"
+    },
+    "AppTerminationNotificationSubscription": {
+      "description": "This type represents a AppTerminationNotificationSubscription subscription to the notifications from the MEC platform regarding the availability and termination of a MEC service or a list of MEC services.",
+      "type": "object",
+      "required": [
+        "subscriptionType",
+        "callbackReference",
+        "appInstanceId"
+      ],
+      "properties": {
+        "subscriptionType": {
+          "$ref": "#/definitions/AppTerminationNotificationSubscription.SubscriptionType"
+        },
+        "callbackReference": {
+          "$ref": "#/definitions/AppTerminationNotificationSubscription.CallbackReference"
+        },
+        "_links": {
+          "$ref": "#/definitions/Self"
+        },
+        "appInstanceId": {
+          "$ref": "#/definitions/AppTerminationNotificationSubscription.AppInstanceId"
+        }
+      }
+    },
+    "AppTerminationNotificationSubscription.SubscriptionType": {
+      "description": "Shall be set to AppTerminationNotificationSubscription.",
+      "type": "string",
+      "example": "AppTerminationNotificationSubscription"
+    },
+    "AppTerminationNotificationSubscription.AppInstanceId": {
+      "description": "It is used as the filtering criterion for the subscribed events.",
+      "type": "string",
+      "example": "AppInst1"
+    },
     "SerializerTypes": {
       "description": "The enumeration SerializerTypes represents types of serializers",
       "type": "string",
@@ -2062,13 +2373,26 @@
       ],
       "example": "JSON"
     },
+    "LocalityTypes": {
+      "description": "The scope of locality as expressed by \"consumedLocalOnly\" and \"isLocal\". If absent, defaults to MEC_HOST",
+      "type": "string",
+      "enum": [
+        "MEC_SYSTEM",
+        "MEC_HOST",
+        "NFVI_POP",
+        "ZONE",
+        "ZONE_GROUP",
+        "NFVI_NODE"
+      ],
+      "example": "MEC_SYSTEM"
+    },
     "ServiceInfo.SerInstanceId": {
-      "description": "Identifier of the service instance assigned by the MEPM / mobile edge platform.",
+      "description": "Identifier of the service instance assigned by the MEPM / MEC platform.",
       "type": "string",
       "example": "ServiceInstance123"
     },
     "ServiceInfo.SerName": {
-      "description": "The name of the service. This is how the service producing mobile edge application identifies the service instance it produces.",
+      "description": "The name of the service. This is how the service producing MEC application identifies the service instance it produces.",
       "type": "string",
       "example": "ExampleService"
     },
@@ -2091,8 +2415,18 @@
       "type": "string",
       "example": "ServiceVersion1"
     },
+    "ServiceInfo.ConsumedLocalOnly": {
+      "description": "Indicate whether the service can only be consumed by the MEC applications located in the same locality (as defined by scopeOfLocality) as this service instance",
+      "type": "boolean",
+      "example": false
+    },
+    "ServiceInfo.IsLocal": {
+      "description": "Indicate whether the service is located in the same locality (as defined by scopeOfLocality) as the consuming MEC application",
+      "type": "boolean",
+      "example": true
+    },
     "ServiceInfo": {
-      "description": "This type represents the general information of a mobile edge service.",
+      "description": "This type represents the general information of a MEC service.",
       "type": "object",
       "required": [
         "serName",
@@ -2124,6 +2458,15 @@
         },
         "serializer": {
           "$ref": "#/definitions/SerializerTypes"
+        },
+        "scopeOfLocality": {
+          "$ref": "#/definitions/LocalityTypes"
+        },
+        "consumedLocalOnly": {
+          "$ref": "#/definitions/ServiceInfo.ConsumedLocalOnly"
+        },
+        "isLocal": {
+          "$ref": "#/definitions/ServiceInfo.IsLocal"
         }
       }
     },
@@ -2283,7 +2626,7 @@
       }
     },
     "TimingCaps": {
-      "description": "This type represents the information provided by the mobile edge platform in response to the Timing capabilities Query message.",
+      "description": "This type represents the information provided by the MEC platform in response to the Timing capabilities Query message.",
       "type": "object",
       "properties": {
         "timeStamp": {
@@ -2502,7 +2845,10 @@
           "$ref": "#/definitions/TrafficRule.Priority"
         },
         "trafficFilter": {
-          "$ref": "#/definitions/TrafficFilter"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TrafficFilter"
+          }
         },
         "action": {
           "$ref": "#/definitions/TrafficRule.Action"
@@ -2545,7 +2891,7 @@
       "example": "2.0"
     },
     "TransportInfo": {
-      "description": "This type represents the general information of a mobile edge service.",
+      "description": "This type represents the general information of a MEC service.",
       "type": "object",
       "required": [
         "id",
